@@ -14,10 +14,9 @@ sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(
 def search():
     query = request.args.get('query')
     if not query:
-        print("qui")
         return render_template('search.html', results=None)
 
     results = sp.search(q=query, type='playlist', limit=10)
     playlists = results['playlists']['items']
 
-    return render_template('search.html', results=playlists)
+    return render_template('search.html', query=query, results=playlists)
