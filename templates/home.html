@@ -6,6 +6,12 @@
     <title>Profilo Utente</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        /* Colore personalizzato per la navbar */
+        .bg-custom {
+            background-color: #0a8025 !important;
+        }
+    </style>
 </head>
 <body class="bg-dark text-white">
 
@@ -21,6 +27,36 @@
             </div>
         {% endif %}
 
+    </div>
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-sm navbar-dark bg-custom">
+            <div class="container-fluid">
+              <a class="navbar-brand" href="javascript:void(0)">Logo</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="mynavbar">
+                <ul class="navbar-nav me-auto">
+                  <li class="nav-item">
+                    <a class="nav-link" href="javascript:void(0)">Link</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="javascript:void(0)">Link</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="javascript:void(0)">Link</a>
+                  </li>
+                </ul>
+                
+                <form class="d-flex" action="{{ url_for('search.search') }}"  method="get" >
+                  <input class="form-control me-2" name="query" type="text" placeholder="Scrivi qui...">
+                  <button class="btn btn-dark" type="submit">Cerca</button>
+                </form>
+              </div>
+            </div>
+          </nav>
+    </div>
+    <div class="container mt-4">
         <h2 class="mt-4">Le tue Playlist:</h2>
         {% if playlists %}
             <table class="table table-dark table-striped mt-3">
