@@ -3,7 +3,7 @@ from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
 
 SPOTIFY_CLIENT_ID = "b1ed2d5909a24d66912adc6f42531fee"
 SPOTIFY_CLIENT_SECRET = "db711b1f9ba646b1a5d1c4cbe0cf897b"
-SPOTIFY_REDIRECT_URI = "https://5000-raffomagno-progettonesp-72o7xu40jhr.ws-eu118.gitpod.io/callback"
+SPOTIFY_REDIRECT_URI = "https://5000-raffomagno-progettonesp-jr212ogdy80.ws-eu118.gitpod.io/callback"
 SPOTIFY_SCOPE = "user-read-private user-read-email playlist-read-private"
 
 sp_oauth = SpotifyOAuth(
