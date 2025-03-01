@@ -7,6 +7,43 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+
+
+    <script>
+        function toggleTracks(playlistId) {
+            let tracksDiv = document.getElementById(`tracks-${playlistId}`);
+        
+            if (tracksDiv.style.display === "none" || tracksDiv.innerHTML === "") {
+                // Se i brani sono nascosti o non caricati, li carichiamo e mostriamo
+                fetch(`/playlist/${playlistId}`)
+                    .then(response => response.text())
+                    .then(html => {
+                        tracksDiv.innerHTML = html;
+                        tracksDiv.style.display = "block";
+                    })
+                    .catch(error => console.error('Errore nel recupero dei brani:', error));
+            } else {
+                // Se i brani sono visibili, li nascondiamo
+                tracksDiv.style.display = "none";
+            }
+        }
+        </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </head>
 <body class="bg-dark text-white">
     <div class="container mt-4">
@@ -45,11 +82,9 @@
                                 {% endif %}
                             </td>
                             <td>
-                                {% if playlist.get('external_urls') and playlist['external_urls'].get('spotify') %}
-                                    <a href="{{ playlist['external_urls']['spotify'] }}" target="_blank" class="btn btn-success btn-sm">Vedi brani (da fare)</a>
-                                {% else %}
-                                    <span class="text-warning">Non disponibile</span>
-                                {% endif %}
+                                <button class="btn btn-success btn-sm" onclick="toggleTracks('{{ playlist.id }}')">Vedi brani</button>
+                                <button class="btn btn-danger btn-sm" onclick="toggleTracks('{{ playlist.id }}')">Nascondi</button>
+                                <div id="tracks-{{ playlist.id }}" style="display: none;"></div> <!-- Contenitore per i brani -->
                             </td>
                         </tr>
                         {% endif %}
