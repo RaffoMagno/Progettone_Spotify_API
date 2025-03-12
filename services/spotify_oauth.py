@@ -1,9 +1,9 @@
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
 
-SPOTIFY_CLIENT_ID = "b1ed2d5909a24d66912adc6f42531fee"
-SPOTIFY_CLIENT_SECRET = "db711b1f9ba646b1a5d1c4cbe0cf897b"
-SPOTIFY_REDIRECT_URI = "https://5000-raffomagno-progettonesp-jr212ogdy80.ws-eu118.gitpod.io/callback"
+SPOTIFY_CLIENT_ID = "6cdc57044c7e4a4eacc20754b6fd038b"
+SPOTIFY_CLIENT_SECRET = "16b492cf1a764f5d9756e33db66a990e"
+SPOTIFY_REDIRECT_URI = "https://5000-raffomagno-progettonesp-ekpgstao5pv.ws-eu118.gitpod.io/callback" #ognuno qui inserisce il proprio link seguito da "/callback"
 SPOTIFY_SCOPE = "user-read-private user-read-email playlist-read-private"
 
 sp_oauth = SpotifyOAuth(
