@@ -13,7 +13,11 @@ def analizza_playlist_view(playlist_id):
     sp = spotipy.Spotify(auth=token_info['access_token'])
     tracks = sp.playlist_tracks(playlist_id)['items']
 
+    playlist = sp.playlist(playlist_id)  
+    tracks = playlist['tracks']['items']
+    playlist_name = playlist['name']
+    
     # Passiamo i brani al servizio di analisi
     plots = analizza_playlist(tracks)
 
-    return render_template('brani.html', tracks=tracks, plots=plots)
+    return render_template('brani.html', playlist_name=playlist_name, tracks=tracks, plots=plots)

@@ -16,7 +16,7 @@ def analizza_playlist(tracks):
     if not tracks:
         return {}
 
-    # Creiamo un DataFrame con gli artisti e gli album
+    #DataFrame con artisti e album
     data = []
     for track in tracks:
         track_info = track.get('track', {})
@@ -31,21 +31,21 @@ def analizza_playlist(tracks):
 
     plots = {}
 
-    # 🔹 1. Top 5 Artisti più presenti
+    #5 Artisti più presenti
     artist_count = df['artist'].value_counts().head(5)
     fig, ax = plt.subplots(figsize=(6, 4))
     sns.barplot(x=artist_count.values, y=artist_count.index, ax=ax, palette='viridis')
     ax.set_title('Top 5 Artisti più Presenti')
     plots['top_artists'] = plot_to_base64(fig)
 
-    # 🔹 2. Top 5 Album più presenti
+    #5 Album più presenti
     album_count = df['album'].value_counts().head(5)
     fig, ax = plt.subplots(figsize=(6, 4))
     sns.barplot(x=album_count.values, y=album_count.index, ax=ax, palette='magma')
     ax.set_title('Top 5 Album più Presenti')
     plots['top_albums'] = plot_to_base64(fig)
 
-    # 🔹 3. Distribuzione Generi Musicali (se disponibili)
+    #Distribuzione Generi Musicali (se disponibili)
     if not df['genres'].isna().all():
         genre_list = df['genres'].str.split(', ').explode().dropna()
         genre_count = genre_list.value_counts().head(7)
@@ -54,7 +54,7 @@ def analizza_playlist(tracks):
         ax.set_title('Distribuzione Generi Musicali')
         plots['top_genres'] = plot_to_base64(fig)
 
-    # 🔹 4. Numero di brani per artista (aggiunta extra)
+    #Numero di brani per artista (aggiunta extra)
     fig, ax = plt.subplots(figsize=(6, 4))
     artist_count.plot(kind='pie', autopct='%1.1f%%', ax=ax, startangle=90, cmap='Set3')
     ax.set_ylabel('')

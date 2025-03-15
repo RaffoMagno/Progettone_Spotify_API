@@ -25,6 +25,10 @@ def visualizza_brani(playlist_id):
         return redirect(url_for('auth.login'))
 
     sp = spotipy.Spotify(auth=token_info['access_token'])
-    tracks = sp.playlist_tracks(playlist_id)['items']
+    
+    # Ottenere i dettagli della playlist per estrarre il nome
+    playlist = sp.playlist(playlist_id)  
+    tracks = playlist['tracks']['items']
+    playlist_name = playlist['name']
 
-    return render_template('brani.html', tracks=tracks)
+    return render_template('brani.html', tracks=tracks, playlist_name=playlist_name)
