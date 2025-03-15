@@ -15,47 +15,40 @@
             {% if user_info %}
                 <h1>Benvenuto, {{ user_info['display_name'] }}!</h1>
             {% else %}
-            <h1>Benvenuto, anonimo!</h1>
+                <h1>Benvenuto, anonimo!</h1>
             {% endif %}
-            
             <a href="{{ url_for('auth.logout') }}" class="btn btn-danger">Logout</a>
         </div>
-        
+
         {% if user_info['images'] %}
             <div class="text-center my-3">
                 <img src="{{ user_info['images'][0]['url'] }}" class="rounded-circle" width="200" alt="Immagine profilo">
             </div>
         {% endif %}
-
     </div>
+
     <div class="container-fluid">
         <nav class="navbar navbar-expand-sm navbar-dark bg-custom">
             <div class="container-fluid">
-              <a class="navbar-brand" href="javascript:void(0)">Logo</a>
-              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
-                <span class="navbar-toggler-icon"></span>
-              </button>
-              <div class="collapse navbar-collapse" id="mynavbar">
-                <ul class="navbar-nav me-auto">
-                  <li class="nav-item">
-                    <a class="nav-link" href="/login">Accedi</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="javascript:void(0)">In arrivo...</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="javascript:void(0)">In arrivo... ;)</a>
-                  </li>
-                </ul>
-                
-                <form class="d-flex" action="{{ url_for('search.search') }}"  method="get" >
-                  <input class="form-control me-2" name="query" type="text" placeholder="Scrivi qui...">
-                  <button class="btn btn-dark" type="submit">Cerca</button>
-                </form>
-              </div>
+                <a class="navbar-brand" href="javascript:void(0)">Logo</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="mynavbar">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item"><a class="nav-link" href="/login">Accedi</a></li>
+                        <li class="nav-item"><a class="nav-link" href="javascript:void(0)">In arrivo...</a></li>
+                        <li class="nav-item"><a class="nav-link" href="javascript:void(0)">In arrivo... ;)</a></li>
+                    </ul>
+                    <form class="d-flex" action="{{ url_for('search.search') }}" method="get">
+                        <input class="form-control me-2" name="query" type="text" placeholder="Scrivi qui...">
+                        <button class="btn btn-dark" type="submit">Cerca</button>
+                    </form>
+                </div>
             </div>
-          </nav>
+        </nav>
     </div>
+
     <div class="container mt-4">
         <h2 class="mt-4">Le tue Playlist:</h2>
         {% if playlists %}
@@ -81,7 +74,8 @@
                                 {% endif %}
                             </td>
                             <td>
-                                <a href="{{ url_for('home.visualizza_brani', playlist_id=playlist['id']) }}" class="btn btn-primary btn-sm">Visualizza brani</a>
+                                <a href="{{ url_for('home.visualizza_brani', playlist_id=playlist['id']) }}" class="btn btn-primary btn-sm">Visualizza Brani</a>
+                                <a href="{{ url_for('analizza.analizza_playlist_view', playlist_id=playlist['id']) }}" class="btn btn-warning btn-sm">Analizza Brani</a>
                             </td>
                         </tr>
                     {% endfor %}
