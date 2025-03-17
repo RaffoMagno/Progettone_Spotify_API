@@ -2,4 +2,3 @@ spotipy
 flask
 pandas
 matplotlib
-seaborn
