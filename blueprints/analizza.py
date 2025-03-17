@@ -1,19 +1,16 @@
 from flask import Blueprint, request, render_template, session, redirect, url_for
 from services.analyse import analizza_playlist
 import spotipy
+from services.spotify_oauth import get_spotify_object, sp_public
 
 analizza_bp = Blueprint('analizza', __name__)
 
 @analizza_bp.route('/analizza/<playlist_id>')
 def analizza_playlist_view(playlist_id):
     token_info = session.get('token_info', None)
-    if not token_info:
-        return redirect(url_for('auth.login'))
+    sp = get_spotify_object(token_info) if token_info else sp_public
 
-    sp = spotipy.Spotify(auth=token_info['access_token'])
-    tracks = sp.playlist_tracks(playlist_id)['items']
-
-    playlist = sp.playlist(playlist_id)  
+    playlist = sp.playlist(playlist_id)
     tracks = playlist['tracks']['items']
     playlist_name = playlist['name']
     

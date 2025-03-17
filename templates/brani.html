@@ -15,13 +15,13 @@
         </div>
 
         {% if tracks %}
-            <ul class="list-group mt-3">
+            <ol class="list-group list-group-numbered mt-3">
                 {% for track in tracks %}
-                    <li class="list-group-item list-group-item-dark d-flex justify-content-between align-items-center">
-                        <span><strong>{{ track['track']['name'] }}</strong> - {{ track['track']['artists'][0]['name'] }}</span>
+                    <li class="list-group-item list-group-item-dark d-flex align-items-center">
+                        <span class="text-start ms-2"><strong>{{ track['track']['name'] }}</strong> - {{ track['track']['artists'][0]['name'] }}</span>
                     </li>
                 {% endfor %}
-            </ul>
+            </ol>
         {% else %}
             <p class="text-warning mt-3">Nessun brano disponibile.</p>
         {% endif %}

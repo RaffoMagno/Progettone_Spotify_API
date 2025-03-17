@@ -50,6 +50,7 @@
                                 {% else %}
                                     <span class="text-warning">Non disponibile</span>
                                 {% endif %}
+                                <a href="{{ url_for('analizza.analizza_playlist_view', playlist_id=playlist['id']) }}" class="btn btn-warning btn-sm">Analizza Brani</a>
                             </td>
                         </tr>
                         {% endif %}
