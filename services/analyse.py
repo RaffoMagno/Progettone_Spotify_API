@@ -59,9 +59,13 @@ def analizza_playlist(tracks):
         ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
         plots['top_genres'] = plot_to_base64(fig)
 
-    # Numero di brani per artista (aggiunta extra)
+    # Numero di brani per artista (correzione del grafico a torta)
+    total_tracks = df['artist'].value_counts().sum()  # Totale brani nella playlist
+    artist_percentages = (artist_count / total_tracks) * 100  # Percentuali corrette
+
     fig, ax = plt.subplots(figsize=(6, 4))
-    ax.pie(artist_count, labels=artist_count.index, autopct=lambda p: f'{int(p * artist_count.sum() / 100)}%', startangle=90, colors=['blue', 'green', 'red', 'purple', 'orange'])
+    ax.pie(artist_count, labels=artist_count.index, autopct=lambda p: f'{p:.1f}%' if p > 0 else '', 
+           startangle=90, colors=['blue', 'green', 'red', 'purple', 'orange'])
     ax.set_title('Distribuzione Brani per Artista')
     plots['artist_distribution'] = plot_to_base64(fig)
 
