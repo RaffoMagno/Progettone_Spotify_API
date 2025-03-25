@@ -4,7 +4,7 @@ from services.spotify_oauth import get_spotify_object
 
 home_bp = Blueprint('home', __name__)
 
-@home_bp.route('/')
+@home_bp.route('/home')
 def homepage():
     token_info = session.get('token_info', None)
 

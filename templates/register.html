@@ -32,8 +32,8 @@
 
             <form method="POST">
                 <div class="mb-3">
-                    <label for="username" class="form-label">Username</label>
-                    <input type="text" class="form-control" id="username" name="username" required>
+                    <label for="nickname" class="form-label">Nickname</label>
+                    <input type="text" class="form-control" id="nickname" name="nickname" required>
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
@@ -43,7 +43,7 @@
             </form>
 
             <div class="text-center mt-3">
-                <a href="{{ url_for('login') }}">Hai già un account? Accedi qui.</a>
+                <a href="{{ url_for('local_login.login_page') }}">Hai già un account? Accedi qui.</a>
             </div>
         </div>
     </div>
