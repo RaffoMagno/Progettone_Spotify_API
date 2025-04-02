@@ -3,7 +3,8 @@ from services.models import DatabaseWrapper
 import pymysql
 
 # Creiamo l'oggetto database
-db = DatabaseWrapper(host="localhost", user="root", password="password", database="SpotifyDB")
+db = DatabaseWrapper(db_name="SpotifyDB.sqlite")
+
 
 local_login_bp = Blueprint('local_login', __name__)
 

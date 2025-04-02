@@ -1,30 +1,25 @@
-import pymysql
+import sqlite3
+import os
 
 class DatabaseWrapper:
     
-    def __init__(self, host, user, password, database):
-        self.db_config = {
-            'host': "localhost",
-            'user': "root",
-            'password': "password",
-            'database': "SpotifyDB",
-        }
-        self.create_tables()  # Creazione delle tabelle all'avvio
+    def __init__(self, db_name="SpotifyDB.sqlite"):
+        self.db_path = os.path.join(os.path.dirname(__file__), db_name)
+        self.create_tables()
 
     def connect(self):
-        return pymysql.connect(**self.db_config)
+        return sqlite3.connect(self.db_path)
 
     def execute_query(self, query, params=()):
         conn = self.connect()
-        with conn.cursor() as cursor:
-            cursor.execute(query, params)
-            conn.commit()
+        with conn:
+            conn.execute(query, params)
         conn.close()
 
     def fetch_query(self, query, params=()):
         conn = self.connect()
-        with conn.cursor() as cursor:
-            cursor.execute(query, params)
+        with conn:
+            cursor = conn.execute(query, params)
             result = cursor.fetchall()
         conn.close()
         return result
@@ -36,17 +31,17 @@ class DatabaseWrapper:
     def create_table_Utente(self):
         self.execute_query('''
             CREATE TABLE IF NOT EXISTS Utente (
-                id_u INT AUTO_INCREMENT PRIMARY KEY,
-                nickname VARCHAR(100) NOT NULL UNIQUE,
-                password VARCHAR(100) NOT NULL
+                id_u INTEGER PRIMARY KEY AUTOINCREMENT,
+                nickname TEXT NOT NULL UNIQUE,
+                password TEXT NOT NULL
             )
         ''')
 
     def create_table_playlist(self):
         self.execute_query('''
             CREATE TABLE IF NOT EXISTS Playlist (
-                id_p VARCHAR(255) PRIMARY KEY,
-                id_u INT NOT NULL,
+                id_p TEXT PRIMARY KEY,
+                id_u INTEGER NOT NULL,
                 FOREIGN KEY (id_u) REFERENCES Utente(id_u) ON DELETE CASCADE
             )
         ''')
@@ -58,16 +53,16 @@ class DatabaseWrapper:
         return self.fetch_query('SELECT * FROM Playlist')
 
     def aggiungi_Utente(self, nickname, password):
-        self.execute_query('INSERT INTO Utente (nickname, password) VALUES (%s, %s)', (nickname, password,))
+        self.execute_query('INSERT INTO Utente (nickname, password) VALUES (?, ?)', (nickname, password))
 
     def aggiungi_Playlist(self, id_p, id_u):
-        self.execute_query('INSERT INTO Playlist (id_p, id_u) VALUES (%s, %s)', (id_p, id_u,))
+        self.execute_query('INSERT INTO Playlist (id_p, id_u) VALUES (?, ?)', (id_p, id_u))
 
-    def rimuovi_Playlist(self, indice):
-        self.execute_query('DELETE FROM Playlist WHERE id_p = %s', (indice,))
+    def rimuovi_Playlist(self, id_p):
+        self.execute_query('DELETE FROM Playlist WHERE id_p = ?', (id_p,))
 
-    def rimuovi_Utente(self, indice):
-        self.execute_query('DELETE FROM Utente WHERE id_u = %s', (indice,))
+    def rimuovi_Utente(self, id_u):
+        self.execute_query('DELETE FROM Utente WHERE id_u = ?', (id_u,))
 
     def svuota_Utente(self):
         self.execute_query('DELETE FROM Utente')
