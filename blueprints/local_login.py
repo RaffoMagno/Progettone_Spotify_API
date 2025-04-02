@@ -1,31 +1,34 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from services.models import DatabaseWrapper
-
+from services.models import DatabaseWrapper, User
+from werkzeug.security import check_password_hash, generate_password_hash
+from flask_login import login_user
 
 # Creiamo l'oggetto database
-<<<<<<< HEAD
-db = DatabaseWrapper(db_name="SpotifyDB.sqlite")
-
-=======
 db = DatabaseWrapper(db_file="SpotifyDB.db")
->>>>>>> refs/remotes/origin/main
 
 local_login_bp = Blueprint('local_login', __name__)
 
-@local_login_bp.route('/')
+@local_login_bp.route('/', methods=['GET', 'POST'])
 def login_page():
     if request.method == 'POST':
-        username = request.form['username']
+        username = request.form['nickname']
         password = request.form['password']
-        user = User.query.filter_by(username=username).first()
 
-        if user and bcrypt.check_password_hash(user.password, password):
-            login_user(user)
-            flash("Login effettuato!", "success")
-            return redirect(url_for('home.homepage'))
+        utenti = db.get_Utente()
+        user_data = next((u for u in utenti if u[0] == username), None)  # Cerca l'utente per nickname
+        
+        if user_data:
+            stored_nickname, stored_password = user_data  # stored_password è la password memorizzata
+
+            if stored_password == password:  # Confronta direttamente le password
+                user = User(nickname=stored_nickname)  # Assumendo che User sia correttamente definito
+                login_user(user)
+                flash("Login effettuato!", "success")
+                return redirect(url_for('home.homepage'))
+        
         flash("Credenziali non valide.", "error")
-        return redirect(url_for('login'))
-
+        return redirect(url_for('local_login.login_page'))
+    
     return render_template('login.html')
 
 
@@ -38,13 +41,14 @@ def register_page():
 
         # Controlliamo se l'utente esiste già
         utenti = db.get_Utente()
-        if any(u[1] == nickname for u in utenti):
+        if any(u[0] == nickname for u in utenti):
             flash('Nome utente già esistente!', 'error')
             return redirect(url_for('local_login.register_page'))
 
-        # Salviamo l'utente
-        db.aggiungi_Utente(nickname, password)
+        # Salviamo l'utente con password in chiaro
+        db.aggiungi_Utente(nickname, password)  # Salva la password in chiaro
         flash('Registrazione completata con successo!', 'success')
         return redirect(url_for('local_login.login_page'))
 
     return render_template('register.html')
+
