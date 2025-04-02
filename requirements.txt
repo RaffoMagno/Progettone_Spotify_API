@@ -2,3 +2,4 @@ spotipy
 flask
 pandas
 matplotlib
+pymysql
