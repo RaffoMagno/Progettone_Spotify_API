@@ -2,7 +2,6 @@ import sqlite3
 import os
 
 class DatabaseWrapper:
-    
     def __init__(self, db_file='SpotifyDB.db'):
         # Il file del database SQLite sarà nella cartella di progetto
         self.db_file = db_file
@@ -11,7 +10,6 @@ class DatabaseWrapper:
     def connect(self):
         # Connetti al database SQLite
         return sqlite3.connect(self.db_file)
-
 
     def execute_query(self, query, params=()):
         conn = self.connect()
@@ -59,7 +57,6 @@ class DatabaseWrapper:
     def aggiungi_Utente(self, nickname, password):
         self.execute_query('INSERT INTO Utente (nickname, password) VALUES (?, ?)', (nickname, password))
 
-
     def aggiungi_Playlist(self, id_p, id_u):
         self.execute_query('INSERT INTO Playlist (id_p, id_u) VALUES (?, ?)', (id_p, id_u))
 
@@ -74,6 +71,9 @@ class DatabaseWrapper:
 
     def svuota_Playlist(self):
         self.execute_query('DELETE FROM Playlist')
+
+# Non creare l'istanza dentro la classe, ma fuori
+db = DatabaseWrapper(db_file="SpotifyDB.db")  # Crea un'istanza globale qui
 
 from flask_login import UserMixin
 
