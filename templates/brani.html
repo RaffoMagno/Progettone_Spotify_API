@@ -11,7 +11,7 @@
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center">
             <h1>Brani della Playlist - {{ playlist_name }}</h1>
-            <a href="{{ url_for('home.homepage') }}" class="btn btn-warning">← Torna alla Home</a>
+            <button onclick="window.history.back();" class="btn btn-warning">&#8592; Torna Indietro</button>
         </div>
 
         {% if tracks %}
