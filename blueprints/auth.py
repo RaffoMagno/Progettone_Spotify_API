@@ -1,4 +1,5 @@
-from flask import Blueprint, redirect, request, url_for, session
+from flask import Blueprint, redirect, request, url_for, session, flash
+from flask_login import logout_user
 from services.spotify_oauth import sp_oauth
 
 auth_bp = Blueprint('auth', __name__)
@@ -10,8 +11,14 @@ def login():
 
 @auth_bp.route('/logout')
 def logout():
-    session.clear()
+    session.clear()  # Termina la sessione di Spotify
     return redirect(url_for('home.homepage'))
+
+@auth_bp.route('/logout_local')
+def logout_local():
+    logout_user()  # Termina la sessione locale
+    flash("Logout effettuato!", "success")
+    return redirect(url_for('local_login.login_page'))  # Redirige alla pagina di login locale
 
 @auth_bp.route('/callback')
 def callback():
