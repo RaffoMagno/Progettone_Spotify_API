@@ -31,13 +31,26 @@ def analizza_playlist(tracks):
     plots = {}
 
     # 5 Artisti più presenti
-    artist_count = df['artist'].value_counts().head(5)
+    artist_list = []
+
+    for track in tracks:
+        track_info = track.get('track', {})
+        if not track_info:
+            continue
+        artists = track_info.get('artists', [])
+        for artist in artists:
+            artist_list.append(artist['name'])
+
+    artist_series = pd.Series(artist_list)
+    artist_count = artist_series.value_counts().head(5)
+
     fig, ax = plt.subplots(figsize=(6, 4))
     ax.barh(artist_count.index, artist_count.values, color='purple')
     ax.set_title('Top 5 Artisti più Presenti')
     ax.set_xlabel('Numero di Brani')
     ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
     plots['top_artists'] = plot_to_base64(fig)
+
 
     # 5 Album più presenti
     album_count = df['album'].value_counts().head(5)
@@ -59,14 +72,41 @@ def analizza_playlist(tracks):
         ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
         plots['top_genres'] = plot_to_base64(fig)
 
-    # Numero di brani per artista (correzione del grafico a torta)
-    total_tracks = df['artist'].value_counts().sum()  # Totale brani nella playlist
-    artist_percentages = (artist_count / total_tracks) * 100  # Percentuali corrette
+    # Distribuzione Brani per Artista (a torta)
+    total_tracks = df['artist'].value_counts().sum()
+    artist_percentages = (artist_count / total_tracks) * 100
 
     fig, ax = plt.subplots(figsize=(6, 4))
-    ax.pie(artist_count, labels=artist_count.index, autopct=lambda p: f'{p:.1f}%' if p > 0 else '', 
+    ax.pie(artist_count, labels=artist_count.index, autopct=lambda p: f'{p:.1f}%' if p > 0 else '',
            startangle=90, colors=['blue', 'green', 'red', 'purple', 'orange'])
     ax.set_title('Distribuzione Brani per Artista')
     plots['artist_distribution'] = plot_to_base64(fig)
+
+    #Evoluzione della Popolarità nel Tempo
+    popularity_data = []
+    for track in tracks:
+        track_info = track.get('track', {})
+        release_date = track_info.get('album', {}).get('release_date', '')
+        popularity = track_info.get('popularity', None)
+
+        if release_date and popularity is not None:
+            year = release_date[:4]
+            try:
+                year = int(year)
+                popularity_data.append({'year': year, 'popularity': popularity})
+            except ValueError:
+                continue
+
+    if popularity_data:
+        df_pop = pd.DataFrame(popularity_data)
+        df_pop = df_pop.groupby('year').mean().reset_index()
+
+        fig, ax = plt.subplots(figsize=(8, 4))
+        ax.plot(df_pop['year'], df_pop['popularity'], marker='o', color='cyan', linewidth=2)
+        ax.set_title('Evoluzione della Popolarità nel Tempo')
+        ax.set_xlabel('Anno di Pubblicazione')
+        ax.set_ylabel('Popolarità Media')
+        ax.grid(True)
+        plots['popularity_over_time'] = plot_to_base64(fig)
 
     return plots
