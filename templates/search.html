@@ -14,15 +14,22 @@
             <h1 class="text-center">Risultati Ricerca Playlist</h1>
             <a href="/home" class="btn btn-primary position-absolute end-0">Torna alla Home</a>
         </div>
-        
+
         <h3 class="text-center text-info">Hai cercato: "{{ query }}"</h3>
-        
+
+        <!-- Navbar con form di ricerca -->
         <nav class="navbar navbar-expand-sm navbar-dark bg-custom mb-4">
             <div class="container-fluid">
-                <a class="navbar-brand" href="/home">Home</a>
+                <a class="navbar-brand" href="javascript:history.back()">Indietro</a>
+                <div class="collapse navbar-collapse justify-content-end" id="mynavbar">
+                    <form class="d-flex" action="{{ url_for('search.search') }}" method="get">
+                        <input class="form-control me-2" name="query" type="text" placeholder="Scrivi qui...">
+                        <button class="btn btn-dark" type="submit">Cerca</button>
+                    </form>
+                </div>
             </div>
         </nav>
-        
+
         {% if results %}
             <table class="table table-dark table-striped mt-3">
                 <thead>
@@ -51,6 +58,8 @@
                                     <span class="text-warning">Non disponibile</span>
                                 {% endif %}
                                 <a href="{{ url_for('analizza.analizza_playlist_view', playlist_id=playlist['id']) }}" class="btn btn-warning btn-sm">Analizza Brani</a>
+                                <!-- Bottone per selezionare la playlist per il confronto -->
+                                <a href="" class="btn btn-info btn-sm">Confronta</a>
                             </td>
                         </tr>
                         {% endif %}

@@ -12,16 +12,13 @@ app.secret_key = 'chiave_per_session'  # Imposta la chiave segreta per la sessio
 
 # Configura il LoginManager
 login_manager = LoginManager()
-login_manager.init_app(app)  # Associa il LoginManager all'app Flask
-
-# Imposta il percorso di login
-login_manager.login_view = 'local_login.login_page'  # Modifica con il nome corretto del percorso di login
+login_manager.init_app(app)
+login_manager.login_view = 'local_login.login_page'
 
 # Funzione per caricare un utente
 @login_manager.user_loader
 def load_user(user_id):
-    # Usa la funzione User.get() che abbiamo definito in precedenza
-    return User.get(user_id)  # user_id è il nickname dell'utente
+    return User.get(user_id)
 
 # Registriamo i Blueprint
 app.register_blueprint(local_login_bp)
