@@ -6,6 +6,7 @@ from blueprints.search import search_bp
 from blueprints.analizza import analizza_bp
 from blueprints.local_login import local_login_bp
 from services.models import User  # Importa la classe User
+from blueprints.salva_playlist_locale import salva_playlist_bp
 
 app = Flask(__name__)
 app.secret_key = 'chiave_per_session'  # Imposta la chiave segreta per la sessione
@@ -26,14 +27,7 @@ app.register_blueprint(auth_bp)
 app.register_blueprint(home_bp)
 app.register_blueprint(search_bp)
 app.register_blueprint(analizza_bp)
+app.register_blueprint(salva_playlist_bp)
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-
-
-
-
-
-
-

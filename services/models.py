@@ -41,12 +41,14 @@ class DatabaseWrapper:
 
     def create_table_playlist(self):
         self.execute_query(''' 
-            CREATE TABLE IF NOT EXISTS Playlist (
-                id_p TEXT PRIMARY KEY,
-                nickname TEXT NOT NULL UNIQUE,
-                FOREIGN KEY (nickname) REFERENCES Utente(utente) ON DELETE CASCADE
-            )
-        ''')
+        CREATE TABLE IF NOT EXISTS Playlist (
+            id_p TEXT,
+            nickname TEXT NOT NULL,
+            PRIMARY KEY (id_p, nickname),
+            FOREIGN KEY (nickname) REFERENCES Utente(nickname) ON DELETE CASCADE
+        )
+    ''')
+
 
     def get_Utente(self):
         return self.fetch_query('SELECT * FROM Utente')
@@ -57,11 +59,11 @@ class DatabaseWrapper:
     def aggiungi_Utente(self, nickname, password):
         self.execute_query('INSERT INTO Utente (nickname, password) VALUES (?, ?)', (nickname, password))
 
-    def aggiungi_Playlist(self, id_p, id_u):
-        self.execute_query('INSERT INTO Playlist (id_p, id_u) VALUES (?, ?)', (id_p, id_u))
+    def aggiungi_Playlist(self, id_p, nickname):
+        self.execute_query('INSERT OR IGNORE INTO Playlist (id_p, nickname) VALUES (?, ?)', (id_p, nickname))
 
-    def rimuovi_Playlist(self, indice):
-        self.execute_query('DELETE FROM Playlist WHERE id_p = ?', (indice,))
+    def rimuovi_Playlist(self, id_p):
+        self.execute_query('DELETE FROM Playlist WHERE id_p = ?', (id_p,))
 
     def rimuovi_Utente(self, indice):
         self.execute_query('DELETE FROM Utente WHERE id_u = ?', (indice,))
