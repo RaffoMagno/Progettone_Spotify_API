@@ -3,6 +3,7 @@
         <thead>
             <tr>
                 <th>Nome Brano</th>
+                <th>Durata</th>
                 <th>Copertina</th>
             </tr>
         </thead>
@@ -10,6 +11,15 @@
             {% for track in tracks %}
             <tr>
                 <td>{{ track['track']['name'] }}</td>
+                
+                <td>
+                    {% set duration_ms = track['track']['duration_ms'] %}
+                    {% set minutes = duration_ms // 60000 %}
+                    {% set seconds = (duration_ms // 1000) % 60 %}
+                    {{ "%02d:%02d"|format(minutes, seconds) }}
+                </td>
+                
+                
                 <td>
                     {% if track['track']['album']['images'] %}
                         <img src="{{ track['track']['album']['images'][0]['url'] }}" class="img-thumbnail" width="80" alt="Copertina album">
