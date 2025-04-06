@@ -17,13 +17,20 @@ def analizza_playlist(tracks):
 
     data = []
     for track in tracks:
-        track_info = track.get('track', {})
+        track_info = track.get('track', None)
         if not track_info:
             continue
-        artists = [artist['name'] for artist in track_info.get('artists', [])]
+        artists = [artist['name'] for artist in track_info.get('artists', []) if artist.get('name')]
         album = track_info.get('album', {}).get('name', 'Sconosciuto')
-        genres = track_info.get('album', {}).get('genres', [])
-        data.append({'title': track_info['name'], 'artist': ', '.join(artists), 'album': album, 'genres': ', '.join(genres)})
+        genres = [genre for genre in track_info.get('album', {}).get('genres', []) if genre]
+        data.append({
+            'title': track_info.get('name', 'Sconosciuto'), 
+            'artist': ', '.join(artists) if artists else 'Sconosciuto',
+            'album': album, 
+            'genres': ', '.join(genres) if genres else 'Sconosciuto'
+            
+            
+            })
 
     df = pd.DataFrame(data)
 
@@ -32,7 +39,7 @@ def analizza_playlist(tracks):
     # 5 Artisti più presenti
     artist_list = []
     for track in tracks:
-        track_info = track.get('track', {})
+        track_info = track.get('track', None)
         if not track_info:
             continue
         artists = track_info.get('artists', [])
@@ -85,8 +92,15 @@ def analizza_playlist(tracks):
     # Evoluzione della Popolarità nel Tempo
     popularity_data = []
     for track in tracks:
-        track_info = track.get('track', {})
-        release_date = track_info.get('album', {}).get('release_date', '')
+        track_info = track.get('track', None)
+        if not track_info:
+            continue  # Salta questo brano se track_info è None
+        
+        album_info = track_info.get('album', None)
+        if not album_info:
+            continue  # Salta questo brano se non ci sono informazioni sull'album
+        
+        release_date = album_info.get('release_date', '')
         popularity = track_info.get('popularity', None)
 
         if release_date and popularity is not None:
@@ -109,8 +123,33 @@ def analizza_playlist(tracks):
         ax.grid(True)
         plots['popularity_over_time'] = plot_to_base64(fig)
 
-    return plots
+    # Distribuzione Temporale dei Brani (numero di brani pubblicati per anno)
+    year_data = []
+    for track in tracks:
+        track_info = track.get('track', None)
+        if not track_info:
+            continue  # Salta questo brano se track_info è None
+        
+        release_date = track_info.get('album', {}).get('release_date', '')
+        if release_date:
+            year = release_date[:4]
+            try:
+                year = int(year)
+                year_data.append(year)
+            except ValueError:
+                continue
 
+    if year_data:
+        df_years = pd.Series(year_data).value_counts().sort_index()
+        fig, ax = plt.subplots(figsize=(8, 4))
+        ax.bar(df_years.index, df_years.values, color='teal')
+        ax.set_title('Distribuzione Temporale dei Brani')
+        ax.set_xlabel('Anno di Pubblicazione')
+        ax.set_ylabel('Numero di Brani')
+        ax.grid(True, axis='y')
+        plots['track_distribution_by_year'] = plot_to_base64(fig)
+
+    return plots
 
 def confronta_popolarita_playlist(sp, id1, id2):
     def estrai_popolarita(sp, playlist_id):
