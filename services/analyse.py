@@ -28,15 +28,13 @@ def analizza_playlist(tracks):
             'artist': ', '.join(artists) if artists else 'Sconosciuto',
             'album': album, 
             'genres': ', '.join(genres) if genres else 'Sconosciuto'
-            
-            
-            })
+        })
 
     df = pd.DataFrame(data)
 
     plots = {}
 
-    # 5 Artisti più presenti
+    # Top 5 Artisti più presenti
     artist_list = []
     for track in tracks:
         track_info = track.get('track', None)
@@ -57,7 +55,7 @@ def analizza_playlist(tracks):
     ax.bar_label(bars, labels=[str(v) for v in artist_count.values], padding=3)
     plots['top_artists'] = plot_to_base64(fig)
 
-    # 5 Album più presenti
+    # Top 5 Album più presenti
     album_count = df['album'].value_counts().head(5)
     fig, ax = plt.subplots(figsize=(6, 4))
     bars = ax.barh(album_count.index, album_count.values, color='orange')
@@ -79,10 +77,26 @@ def analizza_playlist(tracks):
         ax.bar_label(bars, labels=[str(v) for v in genre_count.values], padding=3)
         plots['top_genres'] = plot_to_base64(fig)
 
+    # Distribuzione della Durata dei Brani
+    duration_data = []
+    for track in tracks:
+        track_info = track.get('track', {})
+        duration_ms = track_info.get('duration_ms')
+        if duration_ms:
+            duration_min = duration_ms / 60000
+            duration_data.append(duration_min)
+
+    if duration_data:
+        fig, ax = plt.subplots(figsize=(6, 4))
+        ax.hist(duration_data, bins=15, color='goldenrod', edgecolor='black')
+        ax.set_title('Variazione della Durata dei Brani nella Playlist')
+        ax.set_xlabel('Durata (minuti)')
+        ax.set_ylabel('Frequenza')
+        ax.grid(True, axis='y')
+        plots['duration_distribution'] = plot_to_base64(fig)
+
     # Distribuzione Brani per Artista (a torta)
     total_tracks = df['artist'].value_counts().sum()
-    artist_percentages = (artist_count / total_tracks) * 100
-
     fig, ax = plt.subplots(figsize=(6, 4))
     ax.pie(artist_count, labels=artist_count.index, autopct=lambda p: f'{p:.1f}%' if p > 0 else '',
            startangle=90, colors=['blue', 'green', 'red', 'purple', 'orange'])
@@ -94,15 +108,12 @@ def analizza_playlist(tracks):
     for track in tracks:
         track_info = track.get('track', None)
         if not track_info:
-            continue  # Salta questo brano se track_info è None
-        
+            continue
         album_info = track_info.get('album', None)
         if not album_info:
-            continue  # Salta questo brano se non ci sono informazioni sull'album
-        
+            continue
         release_date = album_info.get('release_date', '')
         popularity = track_info.get('popularity', None)
-
         if release_date and popularity is not None:
             year = release_date[:4]
             try:
@@ -123,13 +134,12 @@ def analizza_playlist(tracks):
         ax.grid(True)
         plots['popularity_over_time'] = plot_to_base64(fig)
 
-    # Distribuzione Temporale dei Brani (numero di brani pubblicati per anno)
+    # Distribuzione Temporale dei Brani (numero di brani per anno)
     year_data = []
     for track in tracks:
         track_info = track.get('track', None)
         if not track_info:
-            continue  # Salta questo brano se track_info è None
-        
+            continue
         release_date = track_info.get('album', {}).get('release_date', '')
         if release_date:
             year = release_date[:4]
