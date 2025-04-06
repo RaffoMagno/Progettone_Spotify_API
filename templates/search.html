@@ -52,15 +52,13 @@
                                 {% endif %}
                             </td>
                             <td>
-                                
-                                <button class="btn btn-success btn-sm" onclick="toggleTracks('{{ playlist.id }}')">Vedi brani</button>
-                                <div id="tracks-{{ playlist.id }}"></div> <!-- Qui verranno mostrati i brani -->
-                                    
-                                
-                                <a href="{{ url_for('analizza.analizza_playlist_view', playlist_id=playlist['id']) }}" class="btn btn-warning btn-sm">Analizza Brani</a>
-                                <!-- Bottone per selezionare la playlist per il confronto -->
-                                <a href="" class="btn btn-info btn-sm">Confronta</a>
-                            </td>
+                                <div class="mb-2 d-flex flex-wrap gap-2">
+                                    <button class="btn btn-success btn-sm" onclick="toggleTracks('{{ playlist.id }}')">Vedi brani</button>
+                                    <a href="{{ url_for('analizza.analizza_playlist_view', playlist_id=playlist['id']) }}" class="btn btn-warning btn-sm">Analizza Brani</a>
+                                    <a href="" class="btn btn-info btn-sm">Confronta</a>
+                                </div>
+                                <div id="tracks-{{ playlist.id }}"></div>
+                            </td>                                                        
                         </tr>
                         {% endif %}
                     {% endfor %}

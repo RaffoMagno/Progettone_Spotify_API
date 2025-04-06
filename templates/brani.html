@@ -28,7 +28,16 @@
         <ol class="list-group list-group-numbered mt-3">
             {% for track in tracks %}
                 <li class="list-group-item list-group-item-dark d-flex align-items-center">
-                    <span class="text-start ms-2"><strong>{{ track['track']['name'] }}</strong> - {{ track['track']['artists'][0]['name'] }}</span>
+                    <span class="text-start ms-2">
+                        <strong>{{ track['track']['name'] }}</strong> - {{ track['track']['artists'][0]['name'] }}
+                    </span>
+                    <span class="ms-auto text-end text-secondary">
+                        {% set ms = track['track']['duration_ms'] %}
+                        {% set minutes = ms // 60000 %}
+                        {% set seconds = (ms % 60000) // 1000 %}
+                        {{ '%d:%02d' % (minutes, seconds) }}
+                    </span>
+                    
                 </li>
             {% endfor %}
         </ol>
