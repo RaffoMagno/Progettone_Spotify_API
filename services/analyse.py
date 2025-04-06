@@ -22,7 +22,7 @@ def analizza_playlist(tracks):
             continue
         artists = [artist['name'] for artist in track_info.get('artists', [])]
         album = track_info.get('album', {}).get('name', 'Sconosciuto')
-        genres = track_info.get('album', {}).get('genres', [])  # Potrebbe essere vuoto
+        genres = track_info.get('album', {}).get('genres', [])
         data.append({'title': track_info['name'], 'artist': ', '.join(artists), 'album': album, 'genres': ', '.join(genres)})
 
     df = pd.DataFrame(data)
@@ -60,7 +60,7 @@ def analizza_playlist(tracks):
     ax.bar_label(bars, labels=[str(v) for v in album_count.values], padding=3)
     plots['top_albums'] = plot_to_base64(fig)
 
-    # Distribuzione Generi Musicali (se disponibili)
+    # Distribuzione Generi Musicali
     if not df['genres'].isna().all():
         genre_list = df['genres'].str.split(', ').explode().dropna()
         genre_count = genre_list.value_counts().head(7)
@@ -110,3 +110,40 @@ def analizza_playlist(tracks):
         plots['popularity_over_time'] = plot_to_base64(fig)
 
     return plots
+
+
+def confronta_popolarita_playlist(sp, id1, id2):
+    def estrai_popolarita(sp, playlist_id):
+        playlist = sp.playlist(playlist_id)
+        name = playlist.get('name', 'Sconosciuta')
+        tracks = playlist['tracks']['items']
+        popolarita = []
+        for item in tracks:
+            track = item.get('track', {})
+            if track:
+                pop = track.get('popularity', None)
+                if pop is not None:
+                    popolarita.append(pop)
+        media = sum(popolarita) / len(popolarita) if popolarita else 0
+        return name, media
+
+    nome1, media1 = estrai_popolarita(sp, id1)
+    nome2, media2 = estrai_popolarita(sp, id2)
+
+    fig, ax = plt.subplots(figsize=(6, 4))
+    ax.bar([nome1, nome2], [media1, media2], color=['skyblue', 'lightgreen'])
+    ax.set_ylabel('Popolarità Media')
+    ax.set_title('Confronto Popolarità Media Playlist')
+    ax.set_ylim(0, 100)
+    for i, v in enumerate([media1, media2]):
+        ax.text(i, v + 2, f"{v:.1f}", ha='center', fontweight='bold')
+
+    grafico = plot_to_base64(fig)
+
+    return {
+        'nome1': nome1,
+        'media1': media1,
+        'nome2': nome2,
+        'media2': media2,
+        'grafico': grafico
+    }

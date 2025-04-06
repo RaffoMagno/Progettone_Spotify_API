@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confronto Playlist</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-dark text-white">
+    <div class="container mt-4">
+        <h1 class="text-center">Confronto Generi Musicali</h1>
+        <h3 class="text-center">Confronto tra Playlist {{ playlist_id_1 }} e Playlist {{ playlist_id_2 }}</h3>
+
+        <!-- Visualizza il grafico -->
+        <div class="text-center">
+            <img src="data:image/png;base64,{{ img_base64 }}" alt="Confronto Generi" class="img-fluid">
+        </div>
+
+        <!-- Distribuzione dei generi per la Playlist 1 -->
+        <h4 class="mt-4">Generi Playlist 1</h4>
+        <ul>
+            {% for genre, count in genres_playlist_1.items() %}
+                <li>{{ genre }}: {{ count }}</li>
+            {% endfor %}
+        </ul>
+
+        <!-- Distribuzione dei generi per la Playlist 2 -->
+        <h4 class="mt-4">Generi Playlist 2</h4>
+        <ul>
+            {% for genre, count in genres_playlist_2.items() %}
+                <li>{{ genre }}: {{ count }}</li>
+            {% endfor %}
+        </ul>
+
+        <a href="{{ url_for('home.homepage') }}" class="btn btn-primary mt-4">Torna alla Home</a>
+    </div>
+</body>
+</html>

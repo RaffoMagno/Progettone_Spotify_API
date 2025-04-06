@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confronto Popolarità Playlist</title>
+</head>
+<body>
+    <h1>Confronto Popolarità Media tra le Playlist</h1>
+    <p><strong>{{ risultato['nome1'] }}</strong>: {{ risultato['media1'] }}%</p>
+    <p><strong>{{ risultato['nome2'] }}</strong>: {{ risultato['media2'] }}%</p>
+    <h3>Grafico di Confronto:</h3>
+    <img src="data:image/png;base64,{{ risultato['grafico'] }}" alt="Confronto Popolarità" />
+</body>
+</html>
