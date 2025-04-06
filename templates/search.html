@@ -52,11 +52,11 @@
                                 {% endif %}
                             </td>
                             <td>
-                                {% if playlist.get('external_urls') and playlist['external_urls'].get('spotify') %}
-                                    <a href="{{ playlist['external_urls']['spotify'] }}" target="_blank" class="btn btn-success btn-sm">Vedi brani (da fare)</a>
-                                {% else %}
-                                    <span class="text-warning">Non disponibile</span>
-                                {% endif %}
+                                
+                                <button class="btn btn-success btn-sm" onclick="toggleTracks('{{ playlist.id }}')">Vedi brani</button>
+                                <div id="tracks-{{ playlist.id }}"></div> <!-- Qui verranno mostrati i brani -->
+                                    
+                                
                                 <a href="{{ url_for('analizza.analizza_playlist_view', playlist_id=playlist['id']) }}" class="btn btn-warning btn-sm">Analizza Brani</a>
                                 <!-- Bottone per selezionare la playlist per il confronto -->
                                 <a href="" class="btn btn-info btn-sm">Confronta</a>
@@ -70,5 +70,34 @@
             <p class="text-warning text-center">Nessuna playlist trovata.</p>
         {% endif %}
     </div>
+
+    <script>
+        function toggleTracks(playlistId) {
+            let tracksDiv = document.getElementById(`tracks-${playlistId}`);
+        
+            if (tracksDiv.style.display === "none" || tracksDiv.innerHTML === "") {
+                // Se i brani sono nascosti o non caricati, li carichiamo e mostriamo
+                fetch(`/playlist/${playlistId}`)
+                    .then(response => response.text())
+                    .then(html => {
+                        tracksDiv.innerHTML = html;
+                        tracksDiv.style.display = "block";
+                    })
+                    .catch(error => console.error('Errore nel recupero dei brani:', error));
+            } else {
+                // Se i brani sono visibili, li nascondiamo
+                tracksDiv.style.display = "none";
+            }
+        }
+        </script>
+
+
+
+
+
+
+
+
+
 </body>
 </html>

@@ -20,3 +20,11 @@ def search():
     playlists = results['playlists']['items']
 
     return render_template('search.html', query=query, results=playlists)
+
+
+
+@search_bp.route('/playlist/<playlist_id>')
+def get_playlist_tracks(playlist_id):
+    """Ottiene i brani di una playlist e li mostra in una tabella sotto la playlist."""
+    tracks = sp.playlist_tracks(playlist_id)['items']
+    return render_template('playlist_tracks.html', tracks=tracks)

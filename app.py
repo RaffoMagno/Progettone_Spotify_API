@@ -29,3 +29,11 @@ app.register_blueprint(analizza_bp)
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+
+
+
+
+
+
