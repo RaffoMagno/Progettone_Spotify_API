@@ -15,7 +15,6 @@ def analizza_playlist(tracks):
     if not tracks:
         return {}
 
-    # DataFrame con artisti e album
     data = []
     for track in tracks:
         track_info = track.get('track', {})
@@ -32,7 +31,6 @@ def analizza_playlist(tracks):
 
     # 5 Artisti più presenti
     artist_list = []
-
     for track in tracks:
         track_info = track.get('track', {})
         if not track_info:
@@ -45,20 +43,21 @@ def analizza_playlist(tracks):
     artist_count = artist_series.value_counts().head(5)
 
     fig, ax = plt.subplots(figsize=(6, 4))
-    ax.barh(artist_count.index, artist_count.values, color='purple')
+    bars = ax.barh(artist_count.index, artist_count.values, color='purple')
     ax.set_title('Top 5 Artisti più Presenti')
     ax.set_xlabel('Numero di Brani')
     ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
+    ax.bar_label(bars, labels=[str(v) for v in artist_count.values], padding=3)
     plots['top_artists'] = plot_to_base64(fig)
-
 
     # 5 Album più presenti
     album_count = df['album'].value_counts().head(5)
     fig, ax = plt.subplots(figsize=(6, 4))
-    ax.barh(album_count.index, album_count.values, color='orange')
+    bars = ax.barh(album_count.index, album_count.values, color='orange')
     ax.set_title('Top 5 Album più Presenti')
     ax.set_xlabel('Numero di Brani')
     ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
+    ax.bar_label(bars, labels=[str(v) for v in album_count.values], padding=3)
     plots['top_albums'] = plot_to_base64(fig)
 
     # Distribuzione Generi Musicali (se disponibili)
@@ -66,10 +65,11 @@ def analizza_playlist(tracks):
         genre_list = df['genres'].str.split(', ').explode().dropna()
         genre_count = genre_list.value_counts().head(7)
         fig, ax = plt.subplots(figsize=(6, 4))
-        ax.barh(genre_count.index, genre_count.values, color='red')
+        bars = ax.barh(genre_count.index, genre_count.values, color='red')
         ax.set_title('Distribuzione Generi Musicali')
         ax.set_xlabel('Numero di Brani')
         ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
+        ax.bar_label(bars, labels=[str(v) for v in genre_count.values], padding=3)
         plots['top_genres'] = plot_to_base64(fig)
 
     # Distribuzione Brani per Artista (a torta)
@@ -82,7 +82,7 @@ def analizza_playlist(tracks):
     ax.set_title('Distribuzione Brani per Artista')
     plots['artist_distribution'] = plot_to_base64(fig)
 
-    #Evoluzione della Popolarità nel Tempo
+    # Evoluzione della Popolarità nel Tempo
     popularity_data = []
     for track in tracks:
         track_info = track.get('track', {})
