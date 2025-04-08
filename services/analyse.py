@@ -160,39 +160,3 @@ def analizza_playlist(tracks):
         plots['track_distribution_by_year'] = plot_to_base64(fig)
 
     return plots
-
-def confronta_popolarita_playlist(sp, id1, id2):
-    def estrai_popolarita(sp, playlist_id):
-        playlist = sp.playlist(playlist_id)
-        name = playlist.get('name', 'Sconosciuta')
-        tracks = playlist['tracks']['items']
-        popolarita = []
-        for item in tracks:
-            track = item.get('track', {})
-            if track:
-                pop = track.get('popularity', None)
-                if pop is not None:
-                    popolarita.append(pop)
-        media = sum(popolarita) / len(popolarita) if popolarita else 0
-        return name, media
-
-    nome1, media1 = estrai_popolarita(sp, id1)
-    nome2, media2 = estrai_popolarita(sp, id2)
-
-    fig, ax = plt.subplots(figsize=(6, 4))
-    ax.bar([nome1, nome2], [media1, media2], color=['skyblue', 'lightgreen'])
-    ax.set_ylabel('Popolarità Media')
-    ax.set_title('Confronto Popolarità Media Playlist')
-    ax.set_ylim(0, 100)
-    for i, v in enumerate([media1, media2]):
-        ax.text(i, v + 2, f"{v:.1f}", ha='center', fontweight='bold')
-
-    grafico = plot_to_base64(fig)
-
-    return {
-        'nome1': nome1,
-        'media1': media1,
-        'nome2': nome2,
-        'media2': media2,
-        'grafico': grafico
-    }

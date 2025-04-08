@@ -33,6 +33,11 @@
 
         <h3 class="text-center text-info">Hai cercato: "{{ query }}"</h3>
 
+        <!-- Bottone Confronta -->
+        <div class="text-center my-3">
+            <button id="compare-btn" class="btn btn-info" style="display: none;">Confronta le Playlist Selezionate</button>
+        </div>
+
         <!-- Navbar con form di ricerca -->
         <nav class="navbar navbar-expand-sm navbar-dark bg-custom mb-4">
             <div class="container-fluid">
@@ -50,6 +55,7 @@
             <table class="table table-dark table-striped mt-3">
                 <thead>
                     <tr>
+                        <th>Seleziona</th>
                         <th>Nome Playlist</th>
                         <th>Copertina</th>
                         <th>Azioni</th>
@@ -59,6 +65,9 @@
                     {% for playlist in results %}
                         {% if playlist %}
                         <tr>
+                            <td>
+                                <input type="checkbox" class="form-check-input playlist-checkbox" value="{{ playlist['id'] }}">
+                            </td>
                             <td>{{ playlist.get('name', 'Senza Nome') }}</td>
                             <td>
                                 {% if playlist.get('images') %}
@@ -72,12 +81,11 @@
                                     <div class="mb-2 button-container">
                                         <button type="button" class="btn btn-success btn-sm" onclick="toggleTracks('{{ playlist.id }}')">Vedi brani</button>
                                         <a href="{{ url_for('analizza.analizza_playlist_view', playlist_id=playlist['id']) }}" class="btn btn-warning btn-sm">Analizza Brani</a>
-                                        <a href="" class="btn btn-info btn-sm">Confronta</a>
                                         <button type="submit" class="btn btn-outline-light btn-sm">Salva in locale</button>
-                                        <div id="tracks-{{ playlist.id }}"></div> <!-- Qui verranno mostrati i brani -->
+                                        <div id="tracks-{{ playlist.id }}"></div>
                                     </div>
                                 </form>                                                          
-                            </td>                                                        
+                            </td>                                                         
                         </tr>
                         {% endif %}
                     {% endfor %}
@@ -88,12 +96,11 @@
         {% endif %}
     </div>
 
+    <!-- Script toggle brani -->
     <script>
         function toggleTracks(playlistId) {
             let tracksDiv = document.getElementById(`tracks-${playlistId}`);
-        
             if (tracksDiv.style.display === "none" || tracksDiv.innerHTML === "") {
-                // Se i brani sono nascosti o non caricati, li carichiamo e mostriamo
                 fetch(`/playlist/${playlistId}`)
                     .then(response => response.text())
                     .then(html => {
@@ -102,10 +109,30 @@
                     })
                     .catch(error => console.error('Errore nel recupero dei brani:', error));
             } else {
-                // Se i brani sono visibili, li nascondiamo
                 tracksDiv.style.display = "none";
             }
         }
-        </script>
+    </script>
+
+    <!-- Script per confronto -->
+    <script>
+        const checkboxes = document.querySelectorAll('.playlist-checkbox');
+        const compareBtn = document.getElementById('compare-btn');
+
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', () => {
+                const selected = document.querySelectorAll('.playlist-checkbox:checked');
+                compareBtn.style.display = selected.length === 2 ? 'inline-block' : 'none';
+            });
+        });
+
+        compareBtn.addEventListener('click', () => {
+            const selected = Array.from(document.querySelectorAll('.playlist-checkbox:checked')).map(cb => cb.value);
+            if (selected.length === 2) {
+                const url = `/compara?p1=${selected[0]}&p2=${selected[1]}`;
+                window.location.href = url;
+            }
+        });
+    </script>
 </body>
 </html>

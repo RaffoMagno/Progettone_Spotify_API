@@ -5,6 +5,7 @@ from blueprints.home import home_bp
 from blueprints.search import search_bp
 from blueprints.analizza import analizza_bp
 from blueprints.local_login import local_login_bp
+from blueprints.compara import compara_bp
 from services.models import User  # Importa la classe User
 from blueprints.salva_playlist_locale import salva_playlist_bp
 
@@ -28,6 +29,7 @@ app.register_blueprint(home_bp)
 app.register_blueprint(search_bp)
 app.register_blueprint(analizza_bp)
 app.register_blueprint(salva_playlist_bp)
+app.register_blueprint(compara_bp)
 
 if __name__ == '__main__':
     app.run(debug=True)
