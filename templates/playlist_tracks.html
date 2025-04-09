@@ -5,29 +5,50 @@
                 <th>Nome Brano</th>
                 <th>Durata</th>
                 <th>Copertina</th>
+                <th>Anteprima</th>
             </tr>
         </thead>
         <tbody>
             {% for track in tracks %}
-            <tr>
-                <td>{{ track['track']['name'] }}</td>
-                
-                <td>
-                    {% set duration_ms = track['track']['duration_ms'] %}
-                    {% set minutes = duration_ms // 60000 %}
-                    {% set seconds = (duration_ms // 1000) % 60 %}
-                    {{ "%02d:%02d"|format(minutes, seconds) }}
-                </td>
-                
-                
-                <td>
-                    {% if track['track']['album']['images'] %}
-                        <img src="{{ track['track']['album']['images'][0]['url'] }}" class="img-thumbnail" width="80" alt="Copertina album">
-                    {% else %}
-                        Nessuna immagine
-                    {% endif %}
-                </td>
-            </tr>
+                {% if track['track'] %}
+                    <tr>
+                        <td>{{ track['track']['name'] }}</td>
+                        
+                        <td>
+                            {% set duration_ms = track['track']['duration_ms'] %}
+                            {% if duration_ms %}
+                                {% set minutes = duration_ms // 60000 %}
+                                {% set seconds = (duration_ms // 1000) % 60 %}
+                                {{ "%02d:%02d"|format(minutes, seconds) }}
+                            {% else %}
+                                <span class="text-muted">Durata non disponibile</span>
+                            {% endif %}
+                        </td>
+                        
+                        <td>
+                            {% if track['track']['album']['images'] %}
+                                <img src="{{ track['track']['album']['images'][0]['url'] }}" class="img-thumbnail" width="80" alt="Copertina album">
+                            {% else %}
+                                Nessuna immagine
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if track['track']['preview_url'] %}
+                                <audio controls>
+                                    <source src="{{ track['track']['preview_url'] }}" type="audio/mpeg">
+                                    Il tuo browser non supporta il tag audio.
+                                </audio>
+                            {% else %}
+                                Nessuna anteprima disponibile
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4" class="text-warning">Dati traccia non disponibili</td>
+                    </tr>
+                {% endif %}
             {% endfor %}
         </tbody>
     </table>
