@@ -88,11 +88,18 @@ def analizza_playlist(tracks):
 
     if duration_data:
         fig, ax = plt.subplots(figsize=(6, 4))
-        ax.hist(duration_data, bins=15, color='goldenrod', edgecolor='black')
+        
+        # Istogramma e raccolta delle altezze delle barre
+        counts, bins, patches = ax.hist(duration_data, bins=15, color='goldenrod', edgecolor='black')
         ax.set_title('Variazione della Durata dei Brani nella Playlist')
         ax.set_xlabel('Durata (minuti)')
         ax.set_ylabel('Frequenza')
-        ax.grid(True, axis='y')
+        # Imposta i tick dell’asse Y solo sui valori interi presenti come altezza delle barre
+        yticks = sorted(set(int(count) for count in counts if count > 0))
+        ax.set_yticks(yticks)
+        
+        # Mostra griglia solo sui tick presenti (quindi solo dove ci sono barre)
+        ax.grid(True, axis='y', which='major')
         plots['duration_distribution'] = plot_to_base64(fig)
 
     # Distribuzione Brani per Artista (a torta)

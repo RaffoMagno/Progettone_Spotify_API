@@ -8,6 +8,10 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
 </head>
+<div id="loader-overlay" class="fullscreen-loader">
+    <div class="loader"></div>
+    <div class="loading-text">Caricamento in corso...</div>
+</div>
 <body class="bg-dark text-white">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -116,23 +120,34 @@
 
     <!-- Script per confronto -->
     <script>
+        const loaderOverlay = document.getElementById('loader-overlay');
+    
+        // Evita di mostrare il loader se si torna indietro nella cronologia
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                loaderOverlay.style.display = 'none';
+            }
+        });
+    
+        // Attiva il loader solo quando si clicca su "Confronta"
         const checkboxes = document.querySelectorAll('.playlist-checkbox');
         const compareBtn = document.getElementById('compare-btn');
-
+    
         checkboxes.forEach(cb => {
             cb.addEventListener('change', () => {
                 const selected = document.querySelectorAll('.playlist-checkbox:checked');
                 compareBtn.style.display = selected.length === 2 ? 'inline-block' : 'none';
             });
         });
-
+    
         compareBtn.addEventListener('click', () => {
             const selected = Array.from(document.querySelectorAll('.playlist-checkbox:checked')).map(cb => cb.value);
             if (selected.length === 2) {
+                loaderOverlay.style.display = 'flex'; // Mostra loader SOLO ORA
                 const url = `/compara?p1=${selected[0]}&p2=${selected[1]}`;
                 window.location.href = url;
             }
         });
-    </script>
+    </script>        
 </body>
 </html>

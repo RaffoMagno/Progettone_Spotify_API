@@ -90,7 +90,7 @@
                                 {% endif %}
                             </td>
                             <td>
-                                <a href="{{ url_for('home.visualizza_brani', playlist_id=playlist['id']) }}" class="btn btn-primary btn-sm">Visualizza Brani</a>
+                                <a href="{{ url_for('home.visualizza_brani', playlist_id=playlist['id']) }}" class="btn btn-success btn-sm">Visualizza Brani</a>
                                 <a href="{{ url_for('analizza.analizza_playlist_view', playlist_id=playlist['id']) }}" class="btn btn-warning btn-sm">Analizza Brani</a>
                                 {% if current_user.is_authenticated and not session.get('spotify_username') %}
                                     <form action="{{ url_for('home.remove_playlist', playlist_id=playlist.id) }}" method="post" class="d-inline-block mt-2">
