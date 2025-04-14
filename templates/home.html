@@ -7,49 +7,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
-    <style>
-        .navbar-custom {
-            background: linear-gradient(to right, #28a745, #218838); /* Gradiente verde */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .navbar-custom .navbar-brand {
-            font-weight: bold;
-            color: white;
-            font-size: 1.5rem;
-            text-transform: uppercase;
-        }
-        .navbar-custom .navbar-nav .nav-link {
-            color: white;
-            font-size: 1rem;
-            margin-right: 15px;
-            transition: color 0.3s ease;
-        }
-        .navbar-custom .navbar-nav .nav-link:hover {
-            color: #17a2b8; /* Verde chiaro per l'hover */
-        }
-        .navbar-custom .navbar-toggler-icon {
-            background-color: white;
-        }
-        .navbar-custom .form-control {
-            border-radius: 25px;
-            border: none;
-            padding-left: 15px;
-        }
-        .navbar-custom .btn-dark {
-            background-color: #333;
-            border: none;
-        }
-        .navbar-custom .btn-dark:hover {
-            background-color: #444;
-        }
-        .navbar-custom .btn-success {
-            background-color: #28a745; /* Verde */
-            border: none;
-        }
-        .navbar-custom .btn-success:hover {
-            background-color: #218838; /* Verde scuro */
-        }
-    </style>
 </head>
 <body class="bg-dark text-white">
 
@@ -68,7 +25,25 @@
             </script>
         {% endif %}
     {% endwith %}
+    
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center">
+            {% if session.get('spotify_username') %}
+                <h1>Benvenuto, {{ session['spotify_username'] }}!</h1>
+                <a href="{{ url_for('auth.logout_spotify') }}" class="btn btn-danger">Logout Spotify</a>
+            {% elif current_user.is_authenticated %}
+                <h1>Benvenuto, {{ current_user.nickname }}!</h1>
+                <a href="{{ url_for('auth.logout_local') }}" class="btn btn-danger">Logout Locale</a>
+            {% endif %}
+        </div>
 
+        {% if user_info and user_info['images'] %}
+            <div class="text-center my-3">
+                <img src="{{ user_info['images'][0]['url'] }}" class="rounded-circle" width="200" alt="Immagine profilo">
+            </div>
+        {% endif %}
+    </div>
+    
     <div class="container-fluid">
         <nav class="navbar navbar-expand-sm navbar-custom">
             <div class="container-fluid">
