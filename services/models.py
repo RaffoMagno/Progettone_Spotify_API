@@ -24,7 +24,7 @@ class DatabaseWrapper:
         # Esegui una query di selezione (SELECT) e restituisci i risultati
         conn = self.connect()
         cursor = conn.cursor()
-        cursor.execute(query, params)  # Esegui la query con i parametri forniti
+        cursor.execute(query, params)  #Esegui la query con i parametri forniti
         result = cursor.fetchall()  # Ottieni tutti i risultati della query
         conn.close()  # Chiudi la connessione al database
         return result
@@ -38,9 +38,9 @@ class DatabaseWrapper:
         # Crea la tabella 'Utente' se non esiste
         self.execute_query(''' 
             CREATE TABLE IF NOT EXISTS Utente (
-                nickname TEXT NOT NULL UNIQUE,  # Il nickname è un campo obbligatorio e unico
-                password TEXT NOT NULL,  # La password è obbligatoria
-                PRIMARY KEY (nickname)  # Imposta il nickname come chiave primaria
+                nickname TEXT NOT NULL UNIQUE,
+                password TEXT NOT NULL,
+                PRIMARY KEY (nickname)
             )
         ''')
 
@@ -48,10 +48,10 @@ class DatabaseWrapper:
         # Crea la tabella 'Playlist' se non esiste
         self.execute_query(''' 
         CREATE TABLE IF NOT EXISTS Playlist (
-            id_p TEXT,  # Identificativo della playlist
-            nickname TEXT NOT NULL,  # Il nickname dell'utente che ha creato la playlist
-            PRIMARY KEY (id_p, nickname),  # La combinazione di id_p e nickname è unica
-            FOREIGN KEY (nickname) REFERENCES Utente(nickname) ON DELETE CASCADE  # La chiave esterna fa riferimento alla tabella 'Utente'
+            id_p TEXT,
+            nickname TEXT NOT NULL,
+            PRIMARY KEY (id_p, nickname),
+            FOREIGN KEY (nickname) REFERENCES Utente(nickname) ON DELETE CASCADE
         )
     ''')
 

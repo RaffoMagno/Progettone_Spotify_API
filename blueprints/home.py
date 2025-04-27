@@ -16,24 +16,44 @@ def homepage():
     # Crea un oggetto Spotify utilizzando il token di accesso, se disponibile
     sp = get_spotify_object(token_info) if token_info else sp_public
     
-    # Se l'utente è autenticato, recupera le informazioni dell'utente e le sue playlist da Spotify
+    recommendations = []  # Lista vuota per i brani consigliati
+
+    # Se l'utente è autenticato con Spotify
     if token_info:
-        user_info = sp.current_user()  # Ottieni informazioni sull'utente corrente da Spotify
-        playlists = sp.current_user_playlists()['items']  # Recupera le playlist dell'utente
+        user_info = sp.current_user()
+        playlists = sp.current_user_playlists()['items']
+
+        # Recupera i brani consigliati solo se l'utente ha playlist
+        if playlists:
+            first_playlist_id = playlists[0]['id']
+            try:
+                # Recupera i brani della prima playlist
+                playlist_tracks = sp.playlist_tracks(first_playlist_id, limit=10)['items']
+                seed_tracks = [track['track']['id'] for track in playlist_tracks if track.get('track')]
+
+                # Prendi al massimo 5 seed track id
+                seed_tracks = seed_tracks[:5]  
+
+                # Se sono disponibili seed track, richiedi raccomandazioni
+                if seed_tracks:
+                    recs = sp.recommendations(seed_tracks=seed_tracks, limit=9)
+                    recommendations = recs['tracks']
+            except Exception as e:
+                print(f"Errore durante il recupero delle raccomandazioni: {e}")
+
     else:
-        # Se l'utente non è autenticato, carica le playlist salvate localmente dal database
-        user_info = None  # Nessuna informazione utente, perché l'utente non è loggato
+        # Se l'utente non è autenticato con Spotify, carica le playlist salvate localmente
+        user_info = None
         saved_playlists = db.fetch_query('SELECT * FROM Playlist WHERE nickname = ?', (current_user.nickname,))
         playlists = []
-        
-        # Per ogni playlist salvata, recupera i dettagli tramite l'API di Spotify
-        for saved_playlist in saved_playlists:
-            playlist_id = saved_playlist[0]  # ID della playlist salvata
-            playlist_details = sp.playlist(playlist_id)  # Ottieni i dettagli della playlist tramite l'API Spotify
-            playlists.append(playlist_details)  # Aggiungi i dettagli alla lista delle playlist
 
-    # Restituisci il template 'home.html' con le informazioni utente e playlist
-    return render_template('home.html', user_info=user_info, playlists=playlists)
+        for saved_playlist in saved_playlists:
+            playlist_id = saved_playlist[0]
+            playlist_details = sp.playlist(playlist_id)
+            playlists.append(playlist_details)
+
+    # Restituisci il template 'home.html' con user_info, playlists e recommendations
+    return render_template('home.html', user_info=user_info, playlists=playlists, recommendations=recommendations)
 
 # Route per rimuovere una playlist dal database
 @home_bp.route('/remove_playlist/<playlist_id>', methods=['POST'])

@@ -30,29 +30,29 @@
     </div>
 
     <!-- Se ci sono tracce, vengono mostrate sotto forma di lista numerata -->
-    {% if tracks %}
-        <ol class="list-group list-group-numbered mt-3">
-            {% for track in tracks %}
+    <ol class="list-group list-group-numbered mt-3">
+        {% for track in tracks %}
+            {% if track['track'] %}
                 <li class="list-group-item list-group-item-dark d-flex align-items-center">
-                    <!-- Nome della traccia e dell'artista -->
                     <span class="text-start ms-2">
                         <strong>{{ track['track']['name'] }}</strong> - {{ track['track']['artists'][0]['name'] }}
                     </span>
-                    <!-- Durata della traccia formattata in minuti e secondi -->
                     <span class="ms-auto text-end text-secondary">
                         {% set ms = track['track']['duration_ms'] %}
                         {% set minutes = ms // 60000 %}
                         {% set seconds = (ms % 60000) // 1000 %}
                         {{ '%d:%02d' % (minutes, seconds) }}
                     </span>
-                    
                 </li>
-            {% endfor %}
-        </ol>
-    {% else %}
-        <!-- Messaggio se non ci sono tracce nella playlist -->
-        <p class="text-warning mt-3">Nessun brano disponibile.</p>
-    {% endif %}
+            {% else %}
+                <li class="list-group-item list-group-item-dark d-flex align-items-center">
+                    <span class="text-start ms-2">
+                        <strong>Brano non disponibile</strong>
+                    </span>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ol>         
 
     <!-- Se sono presenti dei grafici, vengono mostrati sotto la lista -->
     {% if plots %}

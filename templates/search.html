@@ -83,6 +83,7 @@
                         <th>Nome Playlist</th>
                         <th>Copertina</th>
                         <th>Azioni</th>
+                        <th>Altro</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -111,10 +112,13 @@
                                         <a href="{{ url_for('analizza.analizza_playlist_view', playlist_id=playlist['id']) }}" class="btn btn-warning btn-sm">Analizza Brani</a>
                                         <button type="submit" class="btn btn-outline-light btn-sm">Salva in locale</button>
                                         <div id="tracks-{{ playlist.id }}"></div> <!-- Brani della playlist (nascondi inizialmente) -->
-                                        <a href="{{ playlist['external_urls']['spotify'] }}" target="_blank" class="btn btn-info btn-sm mt-1">Condividi</a>
                                     </div>
                                 </form>                                                          
-                            </td>                                                         
+                            </td>
+                            <td>
+                                <a href="{{ playlist['external_urls']['spotify'] }}" target="_blank" class="btn btn-sm" style="background-color: green;">Apri su Spotify</a>
+                                <button type="button" class="btn btn-info btn-sm" onclick="copyLink('{{ playlist['external_urls']['spotify'] }}')">Condividi</button>
+                            </td>                                                        
                         </tr>
                         {% endif %}
                     {% endfor %}
@@ -175,6 +179,30 @@
                 window.location.href = url;
             }
         });
-    </script>        
+    </script>
+
+    <!-- Copia il link della playlist -->
+    <script>
+        function copyLink(link) {
+            navigator.clipboard.writeText(link).then(function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Link copiato!',
+                    text: 'Il link della playlist è stato copiato negli appunti.',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            }, function(err) {
+                console.error('Errore nella copia:', err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Errore!',
+                    text: 'Non è stato possibile copiare il link.',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            });
+        }
+    </script>       
 </body>
 </html>

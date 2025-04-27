@@ -126,5 +126,31 @@
             <p class="text-warning">Non hai playlist disponibili.</p>
         {% endif %}
     </div>
+
+    {% if session.get('spotify_username') %}
+        <div class="container mt-5">
+            <h3>Brani suggeriti</h3>
+            {% if recommendations %}
+                <div class="row">
+                    {% for track in recommendations %}
+                        <div class="col-md-4 mb-3">
+                            <div class="card bg-secondary text-white h-100">
+                                {% if track['album']['images'] %}
+                                    <img src="{{ track['album']['images'][0]['url'] }}" class="card-img-top" alt="Copertina brano">
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ track['name'] }}</h5>
+                                    <p class="card-text">{{ track['artists'][0]['name'] }}</p>
+                                    <a href="{{ track['external_urls']['spotify'] }}" class="btn btn-light btn-sm" target="_blank">Ascolta su Spotify</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-warning">Nessun brano suggerito</p>
+            {% endif %}
+            </div>
+    {% endif %}
 </body>
 </html>
