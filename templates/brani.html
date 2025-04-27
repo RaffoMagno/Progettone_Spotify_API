@@ -28,7 +28,11 @@
         <h1>Brani della Playlist - {{ playlist_name }}</h1>
         <button onclick="window.history.back();" class="btn btn-warning">&#8592; Torna Indietro</button>
     </div>
-
+    {% if plots %}
+        <p>
+            Sono stati analizzati {{ tracks|length }} brani nella playlist.
+        </p>
+    {% endif %}
     <!-- Se ci sono tracce, vengono mostrate sotto forma di lista numerata -->
     <ol class="list-group list-group-numbered mt-3">
         {% for track in tracks %}
