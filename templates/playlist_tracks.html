@@ -1,50 +1,59 @@
 {% if tracks %}
+    <!-- Inizia una tabella per visualizzare i brani, se sono presenti nella variabile "tracks" -->
     <table class="table table-dark table-striped mt-3">
         <thead>
             <tr>
-                <th>Nome Brano</th>
-                <th>Durata</th>
-                <th>Copertina</th>
-                <th>Anteprima</th>
+                <th>Nome Brano</th> <!-- Intestazione per il nome del brano -->
+                <th>Durata</th> <!-- Intestazione per la durata del brano -->
+                <th>Copertina</th> <!-- Intestazione per la copertina dell'album -->
+                <th>Anteprima</th> <!-- Intestazione per l'anteprima audio del brano -->
             </tr>
         </thead>
         <tbody>
             {% for track in tracks %}
+                <!-- Per ogni "track" nella lista "tracks", controlla se esiste la chiave 'track' -->
                 {% if track['track'] %}
                     <tr>
-                        <td>{{ track['track']['name'] }}</td>
-                        
+                        <td>{{ track['track']['name'] }}</td> <!-- Nome del brano -->
+
                         <td>
                             {% set duration_ms = track['track']['duration_ms'] %}
                             {% if duration_ms %}
+                                <!-- Calcola minuti e secondi dalla durata in millisecondi -->
                                 {% set minutes = duration_ms // 60000 %}
                                 {% set seconds = (duration_ms // 1000) % 60 %}
-                                {{ "%02d:%02d"|format(minutes, seconds) }}
+                                {{ "%02d:%02d"|format(minutes, seconds) }} <!-- Visualizza la durata formattata -->
                             {% else %}
+                                <!-- Se la durata non è disponibile, mostra un testo di avviso -->
                                 <span class="text-muted">Durata non disponibile</span>
                             {% endif %}
                         </td>
-                        
+
                         <td>
                             {% if track['track']['album']['images'] %}
+                                <!-- Se esiste un'immagine di copertina, visualizzala -->
                                 <img src="{{ track['track']['album']['images'][0]['url'] }}" class="img-thumbnail" width="80" alt="Copertina album">
                             {% else %}
+                                <!-- Se non ci sono immagini, mostra un testo di avviso -->
                                 Nessuna immagine
                             {% endif %}
                         </td>
 
                         <td>
                             {% if track['track']['preview_url'] %}
+                                <!-- Se esiste un'anteprima audio, visualizzala -->
                                 <audio controls>
                                     <source src="{{ track['track']['preview_url'] }}" type="audio/mpeg">
                                     Il tuo browser non supporta il tag audio.
                                 </audio>
                             {% else %}
+                                <!-- Se non esiste un'anteprima, mostra un testo di avviso -->
                                 Nessuna anteprima disponibile
                             {% endif %}
                         </td>
                     </tr>
                 {% else %}
+                    <!-- Se i dati della traccia non sono disponibili, mostra una riga con un messaggio di avviso -->
                     <tr>
                         <td colspan="4" class="text-warning">Dati traccia non disponibili</td>
                     </tr>
@@ -53,5 +62,6 @@
         </tbody>
     </table>
 {% else %}
+    <!-- Se non ci sono brani da visualizzare, mostra un messaggio di avviso -->
     <p class="text-warning">Nessun brano trovato.</p>
 {% endif %}

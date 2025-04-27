@@ -1,48 +1,67 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
+    <!-- Definisce il set di caratteri e la visualizzazione per dispositivi mobili -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Titolo della pagina -->
     <title>Risultati Ricerca</title>
+
+    <!-- Collegamento al foglio di stile di Bootstrap per una rapida formattazione della pagina -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    <!-- Inclusione di JavaScript di Bootstrap per funzionalità dinamiche -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Collegamento al foglio di stile personalizzato per il progetto -->
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
 </head>
+
+<!-- Overlay di caricamento che appare durante le operazioni di lunga durata -->
 <div id="loader-overlay" class="fullscreen-loader">
     <div class="loader"></div>
     <div class="loading-text">Caricamento in corso...</div>
 </div>
+
 <body class="bg-dark text-white">
+
+    <!-- Importa la libreria SweetAlert2 per notifiche pop-up -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Mostra messaggi flash (successo o errore) se presenti -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             <script>
                 {% for category, message in messages %}
                     Swal.fire({
-                        icon: '{{ "success" if category == "success" else "error" }}',
-                        title: '{{ message }}',
-                        timer: 3000,
-                        showConfirmButton: false
+                        icon: '{{ "success" if category == "success" else "error" }}', <!-- Mostra un'icona success o error a seconda del tipo di messaggio -->
+                        title: '{{ message }}', <!-- Mostra il messaggio -->
+                        timer: 3000, <!-- Imposta un timer di 3 secondi per la scomparsa automatica -->
+                        showConfirmButton: false <!-- Disabilita il pulsante di conferma, il messaggio scomparirà automaticamente -->
                     });
                 {% endfor %}
             </script>
         {% endif %}
     {% endwith %}
 
+    <!-- Contenitore principale per i risultati di ricerca -->
     <div class="container mt-4">
+        <!-- Sezione con il titolo e il bottone per tornare alla home -->
         <div class="d-flex justify-content-center mb-4 position-relative">
             <h1 class="text-center">Risultati Ricerca Playlist</h1>
             <a href="/home" class="btn btn-primary position-absolute end-0">Torna alla Home</a>
         </div>
 
+        <!-- Visualizza la query di ricerca effettuata -->
         <h3 class="text-center text-info">Hai cercato: "{{ query }}"</h3>
 
-        <!-- Bottone Confronta -->
+        <!-- Bottone per confrontare le playlist selezionate -->
         <div class="text-center my-3">
             <button id="compare-btn" class="btn btn-info" style="display: none;">Confronta le Playlist Selezionate</button>
         </div>
 
-        <!-- Navbar con form di ricerca -->
+        <!-- Navbar con form di ricerca per eseguire nuove ricerche -->
         <nav class="navbar navbar-expand-sm navbar-dark bg-custom mb-4">
             <div class="container-fluid">
                 <a class="navbar-brand" href="javascript:history.back()">Indietro</a>
@@ -55,6 +74,7 @@
             </div>
         </nav>
 
+        <!-- Se ci sono risultati, li visualizza in una tabella -->
         {% if results %}
             <table class="table table-dark table-striped mt-3">
                 <thead>
@@ -69,11 +89,14 @@
                     {% for playlist in results %}
                         {% if playlist %}
                         <tr>
+                            <!-- Checkbox per selezionare la playlist -->
                             <td>
                                 <input type="checkbox" class="form-check-input playlist-checkbox" value="{{ playlist['id'] }}">
                             </td>
+                            <!-- Nome della playlist (o "Senza Nome" se mancante) -->
                             <td>{{ playlist.get('name', 'Senza Nome') }}</td>
                             <td>
+                                <!-- Mostra l'immagine di copertura se disponibile, altrimenti visualizza un messaggio -->
                                 {% if playlist.get('images') %}
                                     <img src="{{ playlist['images'][0]['url'] }}" class="img-thumbnail" width="80" alt="Copertina playlist">
                                 {% else %}
@@ -81,14 +104,14 @@
                                 {% endif %}
                             </td>
                             <td>
+                                <!-- Modulo per interagire con la playlist (vedi brani, analizza, salva) -->
                                 <form action="{{ url_for('salva_playlist.salva_playlist', playlist_id=playlist['id']) }}" method="post">
                                     <div class="mb-2 button-container">
                                         <button type="button" class="btn btn-success btn-sm" onclick="toggleTracks('{{ playlist.id }}')">Vedi brani</button>
                                         <a href="{{ url_for('analizza.analizza_playlist_view', playlist_id=playlist['id']) }}" class="btn btn-warning btn-sm">Analizza Brani</a>
                                         <button type="submit" class="btn btn-outline-light btn-sm">Salva in locale</button>
-                                        <div id="tracks-{{ playlist.id }}"></div>
+                                        <div id="tracks-{{ playlist.id }}"></div> <!-- Brani della playlist (nascondi inizialmente) -->
                                         <a href="{{ playlist['external_urls']['spotify'] }}" target="_blank" class="btn btn-info btn-sm mt-1">Condividi</a>
-                                    
                                     </div>
                                 </form>                                                          
                             </td>                                                         
@@ -98,11 +121,12 @@
                 </tbody>
             </table>
         {% else %}
+            <!-- Messaggio se non sono stati trovati risultati -->
             <p class="text-warning text-center">Nessuna playlist trovata.</p>
         {% endif %}
     </div>
 
-    <!-- Script toggle brani -->
+    <!-- Script per mostrare/nascondere la lista dei brani della playlist -->
     <script>
         function toggleTracks(playlistId) {
             let tracksDiv = document.getElementById(`tracks-${playlistId}`);
@@ -120,7 +144,7 @@
         }
     </script>
 
-    <!-- Script per confronto -->
+    <!-- Script per abilitare il confronto tra playlist -->
     <script>
         const loaderOverlay = document.getElementById('loader-overlay');
     
@@ -131,7 +155,7 @@
             }
         });
     
-        // Attiva il loader solo quando si clicca su "Confronta"
+        // Mostra il bottone "Confronta" solo se due playlist sono selezionate
         const checkboxes = document.querySelectorAll('.playlist-checkbox');
         const compareBtn = document.getElementById('compare-btn');
     
@@ -142,10 +166,11 @@
             });
         });
     
+        // Gestisce l'azione di confronto quando il bottone "Confronta" viene premuto
         compareBtn.addEventListener('click', () => {
             const selected = Array.from(document.querySelectorAll('.playlist-checkbox:checked')).map(cb => cb.value);
             if (selected.length === 2) {
-                loaderOverlay.style.display = 'flex'; // Mostra loader SOLO ORA
+                loaderOverlay.style.display = 'flex'; // Mostra il loader SOLO ORA
                 const url = `/compara?p1=${selected[0]}&p2=${selected[1]}`;
                 window.location.href = url;
             }

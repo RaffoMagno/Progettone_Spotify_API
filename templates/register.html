@@ -1,53 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Definisce il set di caratteri e la visualizzazione per dispositivi mobili -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Titolo della pagina -->
     <title>Registrati</title>
+
+    <!-- Collegamento al foglio di stile di Bootstrap per una rapida formattazione della pagina -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Collegamento al foglio di stile per SweetAlert2 (per notifiche pop-up) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <!-- Collegamento al foglio di stile personalizzato per il progetto -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
+    <!-- Importa la libreria SweetAlert2 per notifiche pop-up -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <!-- Sezione centrale della pagina, utilizza Flexbox per centrare il contenuto -->
     <div class="d-flex justify-content-center align-items-center vh-100 bg-light">
+        <!-- Card che contiene il modulo di registrazione -->
         <div class="card p-4" style="width: 400px;">
+            <!-- Titolo della sezione di registrazione -->
             <h2 class="text-center mb-4">Registrazione</h2>
             
+            <!-- Mostra messaggi flash (successo o errore) se presenti -->
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     <script>
                         {% for category, message in messages %}
                         Swal.fire({
-                            icon: '{{ "success" if category == "success" else "error" }}',
-                            title: '{{ message }}',
-                            timer: 3000,
-                            showConfirmButton: false
+                            icon: '{{ "success" if category == "success" else "error" }}', <!-- Mostra un'icona success o error a seconda del tipo di messaggio -->
+                            title: '{{ message }}', <!-- Mostra il messaggio -->
+                            timer: 3000, <!-- Imposta un timer di 3 secondi per la scomparsa automatica -->
+                            showConfirmButton: false <!-- Disabilita il pulsante di conferma, il messaggio scomparirà automaticamente -->
                         });
                         {% endfor %}
                     </script>
                 {% endif %}
             {% endwith %}
 
+            <!-- Modulo per la registrazione dell'utente, invia i dati via POST -->
             <form method="POST">
+                <!-- Campo per il nickname -->
                 <div class="mb-3">
                     <label for="nickname" class="form-label">Nickname</label>
                     <input type="text" class="form-control" id="nickname" name="nickname" required>
                 </div>
+                
+                <!-- Campo per la password -->
                 <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
                     <input type="password" class="form-control" id="password" name="password" required>
                 </div>
+                
+                <!-- Bottone per inviare il modulo -->
                 <button type="submit" class="btn btn-success w-100">Registrati</button>
             </form>
 
+            <!-- Link per chi ha già un account e vuole accedere -->
             <div class="text-center mt-3">
                 <a href="{{ url_for('local_login.login_page') }}">Hai già un account? Accedi qui.</a>
             </div>
         </div>
     </div>
 
+    <!-- Inclusione del JavaScript di Bootstrap per le funzionalità interattive -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

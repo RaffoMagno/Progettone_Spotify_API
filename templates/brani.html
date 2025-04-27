@@ -4,33 +4,41 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ playlist_name }} - Brani</title>
+    <!-- Inclusione del CSS di Bootstrap per una UI reattiva e moderna -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- Inclusione del JS di Bootstrap per funzionalità interattive -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <style>
+        /* Posizionamento del bottone per andare ai grafici in basso a destra */
         #go-to-graphs {
             position: fixed;
             bottom: 20px;
             right: 20px;
             z-index: 1000;
-            display: none;
+            display: none; /* Inizialmente nascosto */
         }
     </style>
 </head>
 <body class="bg-dark text-white">
 
+<!-- Contenitore principale della pagina -->
 <div class="container mt-4">
+    <!-- Barra di intestazione con il titolo della playlist e un bottone per tornare indietro -->
     <div class="d-flex justify-content-between align-items-center">
         <h1>Brani della Playlist - {{ playlist_name }}</h1>
         <button onclick="window.history.back();" class="btn btn-warning">&#8592; Torna Indietro</button>
     </div>
 
+    <!-- Se ci sono tracce, vengono mostrate sotto forma di lista numerata -->
     {% if tracks %}
         <ol class="list-group list-group-numbered mt-3">
             {% for track in tracks %}
                 <li class="list-group-item list-group-item-dark d-flex align-items-center">
+                    <!-- Nome della traccia e dell'artista -->
                     <span class="text-start ms-2">
                         <strong>{{ track['track']['name'] }}</strong> - {{ track['track']['artists'][0]['name'] }}
                     </span>
+                    <!-- Durata della traccia formattata in minuti e secondi -->
                     <span class="ms-auto text-end text-secondary">
                         {% set ms = track['track']['duration_ms'] %}
                         {% set minutes = ms // 60000 %}
@@ -42,14 +50,17 @@
             {% endfor %}
         </ol>
     {% else %}
+        <!-- Messaggio se non ci sono tracce nella playlist -->
         <p class="text-warning mt-3">Nessun brano disponibile.</p>
     {% endif %}
 
+    <!-- Se sono presenti dei grafici, vengono mostrati sotto la lista -->
     {% if plots %}
     <div id="grafici">
         <h3 class="mt-4">Statistiche della Playlist</h3>
         <div class="row">
             {% for key, plot in plots.items() %}
+                <!-- Ogni grafico viene mostrato in una colonna -->
                 <div class="col-md-6 mt-4">
                     <h5 class="text-info">{{ key.replace('_', ' ').title() }}</h5>
                     <img src="data:image/png;base64,{{ plot }}" class="img-fluid">
@@ -59,10 +70,12 @@
     </div>
     {% endif %}
 
+    <!-- Se è presente un confronto di popolarità, mostra i risultati -->
     {% if risultato %}
     <div id="confronto_popolarita" class="mt-5">
         <h3>Confronto Popolarità Media</h3>
         <div class="row">
+            <!-- Dettagli sui due artisti da confrontare -->
             <div class="col-md-6">
                 <h5>{{ risultato['nome1'] }}</h5>
                 <p>Popolarità Media: {{ risultato['media1'] }}%</p>
@@ -73,13 +86,14 @@
             </div>
         </div>
         <h5>Grafico di Confronto</h5>
+        <!-- Grafico del confronto di popolarità -->
         <img src="data:image/png;base64,{{ risultato['grafico'] }}" class="img-fluid">
     </div>
     {% endif %}
 
 </div>
 
-<!--Bottone su-e-giù-->
+<!-- Bottone che permette di saltare ai grafici o tornare su -->
 <button id="scrollButton" class="btn btn-info btn-lg"
         style="position: fixed; bottom: 30px; right: 30px; z-index: 9999; display: none;">
     Vai ai grafici
@@ -92,10 +106,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let isAtBottom = false;
 
+    // Funzione per controllare la posizione del bottone in base alla visibilità dei grafici
     function checkPosition() {
         const rect = grafici.getBoundingClientRect();
         const isVisible = rect.top < window.innerHeight && rect.bottom >= 0;
 
+        // Se i grafici sono visibili, cambia il testo del bottone
         if (isVisible) {
             scrollButton.innerText = "Vai su";
             isAtBottom = true;
@@ -104,20 +120,23 @@ document.addEventListener("DOMContentLoaded", function () {
             isAtBottom = false;
         }
 
-        scrollButton.style.display = "block";
+        scrollButton.style.display = "block";  // Mostra il bottone
     }
 
-    // Scroll controllato senza modificare l'URL
+    // Gestione dello scroll del bottone
     scrollButton.addEventListener("click", function () {
         if (isAtBottom) {
+            // Se è già in fondo alla pagina, torna in cima
             window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
+            // Altrimenti, scorri ai grafici
             grafici.scrollIntoView({ behavior: 'smooth' });
         }
     });
 
+    // Controlla la posizione della pagina quando si scrolla
     window.addEventListener("scroll", checkPosition);
-    checkPosition();
+    checkPosition();  // Inizializza il controllo della posizione
 });
 </script>
 
