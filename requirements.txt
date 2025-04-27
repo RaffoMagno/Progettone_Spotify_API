@@ -2,5 +2,5 @@ spotipy
 flask
 pandas
 matplotlib
-sqlite3
+
 flask-login

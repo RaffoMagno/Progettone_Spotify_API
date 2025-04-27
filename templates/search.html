@@ -87,6 +87,8 @@
                                         <a href="{{ url_for('analizza.analizza_playlist_view', playlist_id=playlist['id']) }}" class="btn btn-warning btn-sm">Analizza Brani</a>
                                         <button type="submit" class="btn btn-outline-light btn-sm">Salva in locale</button>
                                         <div id="tracks-{{ playlist.id }}"></div>
+                                        <a href="{{ playlist['external_urls']['spotify'] }}" target="_blank" class="btn btn-info btn-sm mt-1">Condividi</a>
+                                    
                                     </div>
                                 </form>                                                          
                             </td>                                                         
