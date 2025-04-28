@@ -36,9 +36,9 @@
                 {% for category, message in messages %}
                     Swal.fire({
                         icon: '{{ "success" if category == "success" else "error" }}', <!-- Mostra un'icona success o error a seconda del tipo di messaggio -->
-                        title: '{{ message }}', <!-- Mostra il messaggio -->
-                        timer: 3000, <!-- Imposta un timer di 3 secondi per la scomparsa automatica -->
-                        showConfirmButton: false <!-- Disabilita il pulsante di conferma, il messaggio scomparirà automaticamente -->
+                        title: '{{ message }}',
+                        timer: 3000,
+                        showConfirmButton: false
                     });
                 {% endfor %}
             </script>
